@@ -34,11 +34,12 @@ class Pushbullet:
                 "message": message,
                 "package_name": "com.pushbullet.android",
                 "source_user_iden": self.user_id,
-                "target_device_iden": phone_num,
+                "target_device_iden": phone_id,
                 "type": "messaging_extension_reply"
                   },
               "type": "push"
         }
+        JData = ujson.dumps(sms)
         urequests.post('https://api.pushbullet.com/v2/ephemerals' ,
                        headers={'Access-Token':self.api_key,'Content-Type':'application/json'}
                        ,data=JData)
