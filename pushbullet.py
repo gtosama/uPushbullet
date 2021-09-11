@@ -10,23 +10,25 @@ class Pushbullet:
     
     def get_user_id(self):
         r = urequests.get('https://api.pushbullet.com/v2/users/me' ,headers={'Access-Token':self.api_key})
-        res = ujson.loads(r.text)
+        res = ujson.loads(r.text)        
         self.user_id = res['iden']
+        r.close()
         return self.user_id
     
     def get_device_id(self , dev_name):
         r = urequests.get('https://api.pushbullet.com/v2/devices' , headers={'Access-Token':self.api_key,'Content-Type':'application/json'})
         res = ujson.loads(r.text)
-        
+        r.close()
         for d in res['devices'] :
             if(d['nickname'] == dev_name) :
                 return d['iden']
         return None
     
     def make_push(self ,dev_id,JData) :
-        urequests.post('https://api.pushbullet.com/v2/pushes' ,
+        r = urequests.post('https://api.pushbullet.com/v2/pushes' ,
                        headers={'Access-Token':self.api_key,'Content-Type':'application/json'}
                        ,data=JData)
+        r.close()
     def send_sms(self,phone_num,phone_id,message):
         sms = {
               "push": {
@@ -40,6 +42,7 @@ class Pushbullet:
               "type": "push"
         }
         JData = ujson.dumps(sms)
-        urequests.post('https://api.pushbullet.com/v2/ephemerals' ,
+        r = urequests.post('https://api.pushbullet.com/v2/ephemerals' ,
                        headers={'Access-Token':self.api_key,'Content-Type':'application/json'}
                        ,data=JData)
+        r.close()
